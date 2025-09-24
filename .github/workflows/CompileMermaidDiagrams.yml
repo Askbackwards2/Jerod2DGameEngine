@@ -4,13 +4,13 @@ on:
   push:
     branches: [ main, master ]
     paths:
-      - '**/*.mmd'
-      - '**/*.mermaid'
+      - 'diagrams/*.mmd'
+      - 'diagrams/*.mermaid'
   pull_request:
     branches: [ main, master ]
     paths:
-      - '**/*.mmd'
-      - '**/*.mermaid'
+      - 'diagrams/*.mmd'
+      - 'diagrams/*.mermaid'
   workflow_dispatch: # Allow manual triggering
 
 jobs:
@@ -36,16 +36,16 @@ jobs:
     
     - name: Find and compile Mermaid files
       run: |
-        # Find all .mmd and .mermaid files
-        find . -name "*.mmd" -o -name "*.mermaid" | while read file; do
+        # Find all .mmd and .mermaid files in the diagrams folder
+        find diagrams -name "*.mmd" -o -name "*.mermaid" | while read file; do
           echo "Processing: $file"
           
           # Get the filename without path and extension
           filename=$(basename "$file")
           name_without_ext="${filename%.*}"
           
-          # Compile to PNG in the output directory
-          mmdc -i "$file" -o "diagrams/output/${name_without_ext}.png" -t neutral -b white
+          # Compile to PNG in the output directory with sandbox disabled for CI
+          mmdc -i "$file" -o "diagrams/output/${name_without_ext}.png" -t neutral -b white --puppeteerConfig '{"args":["--no-sandbox","--disable-setuid-sandbox"]}'
           
           echo "Generated: diagrams/output/${name_without_ext}.png"
         done
