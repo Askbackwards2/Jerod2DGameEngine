@@ -1,4 +1,4 @@
-# 2D SDL2 Engine
+# Jerod2D Game Engine
 
 A work in progress data driven 2D game engine utilizing SDL2. Currently in the design phase with these goals in mind:
 - Live refreshable data
