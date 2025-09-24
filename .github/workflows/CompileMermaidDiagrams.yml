@@ -1,0 +1,75 @@
+name: Compile Mermaid Diagrams
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - '**/*.mmd'
+      - '**/*.mermaid'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - '**/*.mmd'
+      - '**/*.mermaid'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  compile-mermaid:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Fetch full history for proper git operations
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install Mermaid CLI
+      run: npm install -g @mermaid-js/mermaid-cli
+    
+    - name: Create output directory
+      run: mkdir -p diagrams/output
+    
+    - name: Find and compile Mermaid files
+      run: |
+        # Find all .mmd and .mermaid files
+        find . -name "*.mmd" -o -name "*.mermaid" | while read file; do
+          echo "Processing: $file"
+          
+          # Get the filename without path and extension
+          filename=$(basename "$file")
+          name_without_ext="${filename%.*}"
+          
+          # Compile to PNG in the output directory
+          mmdc -i "$file" -o "diagrams/output/${name_without_ext}.png" -t neutral -b white
+          
+          echo "Generated: diagrams/output/${name_without_ext}.png"
+        done
+    
+    - name: List generated files
+      run: |
+        echo "Generated PNG files:"
+        ls -la diagrams/output/
+    
+    - name: Commit and push generated diagrams
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Add generated files
+        git add diagrams/output/*.png
+        
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Auto-update Mermaid diagrams [skip ci]"
+          git push
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
