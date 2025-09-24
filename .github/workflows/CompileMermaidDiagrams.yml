@@ -34,6 +34,14 @@ jobs:
     - name: Create output directory
       run: mkdir -p diagrams/output
     
+    - name: Create puppeteer config
+      run: |
+        cat > puppeteer-config.json << EOF
+        {
+          "args": ["--no-sandbox", "--disable-setuid-sandbox"]
+        }
+        EOF
+    
     - name: Find and compile Mermaid files
       run: |
         # Find all .mmd and .mermaid files in the diagrams folder
@@ -44,8 +52,8 @@ jobs:
           filename=$(basename "$file")
           name_without_ext="${filename%.*}"
           
-          # Compile to PNG in the output directory with sandbox disabled for CI
-          mmdc -i "$file" -o "diagrams/output/${name_without_ext}.png" -t neutral -b white --puppeteerConfig '{"args":["--no-sandbox","--disable-setuid-sandbox"]}'
+          # Compile to PNG in the output directory with puppeteer config
+          mmdc -i "$file" -o "diagrams/output/${name_without_ext}.png" -t neutral -b white -p puppeteer-config.json
           
           echo "Generated: diagrams/output/${name_without_ext}.png"
         done
