@@ -41,6 +41,9 @@ direction TB
     }
     class PlayerControls {
     }
+    class Interactable {
+
+    }
     class Tilemap {
       -Vector2 size
     }
@@ -52,6 +55,8 @@ direction TB
     ComponentInterface <|-- Sprite
     ComponentInterface <|-- CollisionBox
     ComponentInterface <|-- PlayerControls
+    ComponentInterface <|-- Interactable
+
     Sprite <|-- AnimatedSprite
     Object "0" o-- "n" ComponentInterface
     Scene "0" o-- "n" Object
