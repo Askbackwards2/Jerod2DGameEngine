@@ -1,0 +1,57 @@
+---
+config:
+  theme: neo-dark
+  layout: dagre
+---
+classDiagram
+direction TB
+    class ComponentInterface {
+	    +Start() void
+	    +Update(float deltaTime) void
+    }
+    class Singleton~T~ {
+	    +GetInstance() T
+    }
+    class GameManager {
+	    -Scene activeScene
+    }
+    class Scene {
+	    +Start() void
+	    +Update(float deltaTime) void
+    }
+    class Object {
+	    +const uint32 id
+	    -string name
+	    +Start() void
+	    +Update(float deltaTime) void
+	    +GetName() string
+    }
+    class Sprite {
+    }
+    class AnimatedSprite {
+    }
+    class SDLManager {
+	    -SDLRenderer* renderer
+	    -SDLWindow* window
+	    +GetRenderer() SDLRenderer*
+	    +GetWindow() SDLWindow*
+    }
+    class CollisionBox {
+    }
+    class PlayerControls {
+    }
+    class Tilemap {
+    }
+
+	note for Tilemap "Each TileMap index is <br/>another layer along the z axis"
+
+    Singleton <|-- SDLManager
+    Singleton <|-- GameManager
+    ComponentInterface <|-- Sprite
+    ComponentInterface <|-- CollisionBox
+    ComponentInterface <|-- PlayerControls
+    Sprite <|-- AnimatedSprite
+    Object "0" o-- "n" ComponentInterface
+    Scene "0" o-- "n" Object
+    GameManager "0" o-- "n" Scene
+    Scene "0" o-- "n" Tilemap
