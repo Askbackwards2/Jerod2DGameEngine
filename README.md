@@ -8,4 +8,4 @@ A work in progress data driven 2D game engine utilizing SDL2. Currently in the d
 # Design
 
 The design is currrently a work-in-progress, automatically updated here.
-![Flowchart](diagrams/output/flowchart.png)
+![Flowchart](diagrams/output/Jerod2DEngine.png)

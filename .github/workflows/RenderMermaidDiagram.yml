@@ -18,7 +18,7 @@ jobs:
       - name: Generate diagram image
         run: |
           mkdir -p diagrams/output
-          mmdc -i diagrams/flowchart.mmd -o diagrams/output/Jerod2DEngine.png
+          mmdc -i diagrams/Jerod2DEngine.mmd -o diagrams/output/Jerod2DEngine.png
 
       - name: Commit rendered image
         run: |
